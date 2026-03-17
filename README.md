@@ -10,7 +10,7 @@ A little about me:
 
 A meme that captures how I currently feel about my university studies is ![](https://media.tenor.com/lXzKnUxRA-8AAAAi/lol.gif)
 
-## About This Project
+## Two different types of fonts
 **one** and *two*
 ## How to make eggs
 1. Put eggs in pot
