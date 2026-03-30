@@ -1,0 +1,50 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+
+```{css}
+
+```
+
+## My dynamic report which is based on data relating to observed clothing styles throughout the week
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+library(tidyverse)
+
+#loading the csv file in and turning it into a dataframe
+logged_data = read.csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vQ47yWJ5BjnfuONvxmp8oRPz1cp46yZ1I7u9kTNq_k_ENWHolVfAe5cCpHxzZpnTozg0IGZKoftEEFg/pub?output=csv')
+
+#Renaming the variables accordingly
+latest_data = logged_data %>%
+  rename(Time = 1, Place = 2, Style = 3, Weather = 4, Time_of_day = 5, Layers = 6)
+
+max_layers = max(latest_data$Layers)
+min_layers = min(latest_data$Layers)
+times_sunny = sum(latest_data$Weather == 'Sunny')
+mean_layers = mean(latest_data$Layers)
+
+#Two plots that interpret the style observed and the weather its observed under
+weather_plot = latest_data %>%
+  ggplot() +
+    geom_bar(aes(x = Weather, fill = Weather))
+
+style_plot = latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = Style, fill = Place))
+
+
+#The code written has allowed me to plot two informative bar plots about oberserved stlyes
+#Also multiple summary values that shows the max, min and mean layers worn but also
+#how many times the observations occured when sunny
+```
+
+```{r}
+weather_plot
+style_plot
+paste0('The maximum layers of clothes recorded was ', max_layers, ', and the minimum layers of clothes recorded was ', min_layers)
+```
