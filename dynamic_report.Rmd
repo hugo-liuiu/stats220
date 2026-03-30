@@ -4,11 +4,13 @@ output: html_fragment
 ---
 
 
-```{css}
-
+```{css echo=FALSE}
+body {
+  background-color: lightblue;
+}
 ```
 
-## My dynamic report which is based on data relating to observed clothing styles throughout the week
+## My dynamic report which is based on data relating to observed clothing styles throughout the week and where they appear
 
 
 ```{r setup, include=FALSE}
@@ -26,16 +28,20 @@ latest_data = logged_data %>%
 max_layers = max(latest_data$Layers)
 min_layers = min(latest_data$Layers)
 times_sunny = sum(latest_data$Weather == 'Sunny')
-mean_layers = mean(latest_data$Layers)
+mean_layers = ceiling(mean(latest_data$Layers))
 
 #Two plots that interpret the style observed and the weather its observed under
 weather_plot = latest_data %>%
   ggplot() +
-    geom_bar(aes(x = Weather, fill = Weather))
+    geom_bar(aes(x = Weather, fill = Weather)) +
+  labs(title = 'What weather condtions gives most interesting styles')
 
 style_plot = latest_data %>%
   ggplot() +
-  geom_bar(aes(x = Style, fill = Place))
+    geom_bar(aes(x = Style, fill = Place)) +
+  labs(title = 'How location affects the type of style that is observed')
+
+  
 
 
 #The code written has allowed me to plot two informative bar plots about oberserved stlyes
@@ -43,8 +49,24 @@ style_plot = latest_data %>%
 #how many times the observations occured when sunny
 ```
 
+
+
+
 ```{r}
 weather_plot
 style_plot
-paste0('The maximum layers of clothes recorded was ', max_layers, ', and the minimum layers of clothes recorded was ', min_layers)
+```
+
+## Weather plot
+
+For weather conditions, it can be seen that most observations occured during cloudy weather, and least during windy or rainy weather. This makes general sense and during rainy or windy conditions, there would be less focus on dressing nice and more about dressing to adapt to the harsher weather conditions. Also 'Cloudy' weather having the highest count is relatively accurate as it allows for the most freedom and flexibility to dress however is deemed appropriate.
+
+## Style + Place plot
+
+It can be seen that the 'casual' style is most easily worn to any sort of place or event, which can be interpreted as the most flexible to its environment. While formal styled clothing is the least flexible as its usually only seen in work place. This can be also interpreted that formal clothing is more occasional and meant for work or events while casual clothing is more flexible in general.
+
+## Dynamic comments
+```{r}
+paste0('The maximum layers of clothes recorded was ', max_layers, ', the minimum layers of clothes recorded was ', min_layers, ', and the average level of layers worn was ', mean_layers)
+
 ```
