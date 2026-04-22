@@ -23,4 +23,4 @@ A meme that captures how I currently feel about my university studies is ![](htt
 ## Good place to order food
 - [Uber Eats](https://www.ubereats.com/nz)
 
-- [s](www.ubereats.com/nz)
+- [s](https://www.ubereats.com/nz)
