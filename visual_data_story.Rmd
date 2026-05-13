@@ -1,0 +1,69 @@
+---
+title: What People Wear in Different Conditions
+output: html_document
+---
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+```
+
+```{js}
+$(function() {
+  $(".level2").css('visibility', 'hidden');
+  $(".level2").first().css('visibility', 'visible');
+  $(".container-fluid").height($(".container-fluid").height() + 300);
+  $(window).on('scroll', function() {
+    $('h2').each(function() {
+      var h2Top = $(this).offset().top - $(window).scrollTop();
+      var windowHeight = $(window).height();
+      if (h2Top >= 0 && h2Top <= windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'visible');
+      } else if (h2Top > windowHeight / 2) {
+        $(this).parent('div').css('visibility', 'hidden');
+      }
+    });
+  });
+})
+```
+
+```{css, echo=FALSE}
+body {
+  background-color: #DDE8E0;
+}
+
+h2 {
+  color: #7A5C8F;
+}
+h1 {
+  color: #7A5C8F;
+}
+```
+
+## Introduction
+
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYnVwdjk4cGRjYXdrZjhydXB3eWlwdGIxaGR5NXBuaWY0ejJ0em0zbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SVH9y2LQUVVCRcqD7o/giphy.gif)
+
+This dataset was collected through systematic observations of individuals in public and everyday settings. For each observation, the time of day, location, weather conditions, clothing style, and number of layers were recorded to investigate patterns in clothing choices across different environments and times. The observations were recorded at different times throughout the day. Each point represents the frequency of each individual observation grouped by the hour it was collected.
+
+## Does time of day really matter?
+
+![](plot1.png)
+
+The density plot compares the number of clothing layers worn during morning and night observations. It shows that morning periods have a clear peak at around two layers, meaning this is the most common outfit choice potentially as it wouldnt be too cold for the need for extra layers. However, the distribution shifts slightly in the evening, with a higher concentration of observations at larger layer counts compared to the morning. This suggests that people tend to wear slightly more layers later in the day, indicating that time of day has an effect on clothing choices.
+
+## How much do people really wear and where?
+
+![](plot4.png)
+The bar graph shows the average number of clothing layers worn across different locations. It highlights that people observed in work settings tend to wear the most layers on average compared to other locations. In contrast, locations such as school, streets, transport, and home all have fairly similar averages, clustering around two layers. This suggests that the workplace may require slightly more formal or layered clothing, while other environments show more consistent and casual dressing patterns.
+
+## Is styles associated with setting?
+
+![](plot2.png)
+It is clear that casual clothing is the most common style across most settings, especially in school and transport, while formal clothing is most strongly associated with the work environment. Other styles such as sporty and streetwear appear less frequently overall, but are still present in specific locations like the streets and work areas. This suggests that clothing style is closely linked to context, with certain environments encouraging more formal or relaxed dress.
+
+## Formal clothing and setting
+
+![](plot6.png)
+It is clear that formal clothing is mainly seen in the office setting and on occasion also on the streets and transport. In contrast, non-formal styles are present across all locations except the workplace. This pattern suggests a stronger association between work environments and higher levels of formality in dress.
