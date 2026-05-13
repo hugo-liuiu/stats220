@@ -1,0 +1,198 @@
+library(tidyverse)
+library(lubridate)
+my_colours <- c(
+  "#DDE8E0",  # pale sage
+  "#BFD8C1",  # soft green
+  "#CDB4DB",  # muted lavender
+  "#D8C3E3",  # light purple
+  "#E9D8F1"   # pastel lilac
+)
+
+my_theme <- theme(
+  
+  plot.background = element_rect(
+    fill = "#DDE8E0"
+
+  ),
+  
+  panel.background = element_rect(
+    fill = "#F7F3FA"
+  ),
+  
+  panel.grid.major = element_line(
+    colour = "#D8C3E3",
+    linewidth = 0.3
+  ),
+  
+  panel.grid.minor = element_blank(),
+  
+  axis.text = element_text(
+    colour = "#5F5B66",
+    size = 11
+  ),
+  
+  axis.title = element_text(
+    colour = "#7A5C8F",
+    face = "bold"
+  ),
+  
+  plot.title = element_text(
+    colour = "#7A5C8F",
+    face = "bold",
+    size = 18
+  ),
+  
+  axis.ticks = element_blank(),
+  axis.line = element_blank(),
+  
+  plot.margin = margin(1,1,1,1,"cm")
+)
+
+#loading the csv file in and turning it into a dataframe
+logged_data = read.csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vSYHA-_PYZNmpbFNdKpfnbmT1sIL36XC_00QUssAxjcZTfWisAJ6YxABJq2-hmjbG-dskOs_F7C6XCF/pub?output=csv')
+
+time_data <- logged_data %>%
+  
+  mutate( hour = hour(dmy_hms(Timestamp)),
+    time_group = if_else(hour < 12, "Early (Morning)", "Late (Afternoon/Evening/Night)")
+  )
+
+plot1 = ggplot(time_data, aes( x = How.many.layers.were.they.wearing.,
+  fill = time_group)) +
+  
+  geom_density(alpha = 0.6) +
+  
+  scale_fill_manual(values = c(
+      "Early (Morning)" = "#BFD8C1",
+      "Late (Afternoon/Evening/Night)" = "#CDB4DB")) +
+  
+  labs(title = "Distribution of Clothing Layers",
+    subtitle = "Early vs late day observations",
+    x = "Number of Layers",
+    y = "Density",
+    fill = "Time of Day") +
+  
+  my_theme
+
+ggsave("plot1.png", plot1)
+  
+
+
+plot2 = ggplot(logged_data, aes(
+  x = What.style.best.describes.how.the.person.was.dressed.,
+  y = Where.did.you.see.this.person.
+)) +
+  
+  geom_count(aes(size = after_stat(n), colour = after_stat(n))) +
+  
+  scale_colour_gradient(
+    low = "#BFD8C1",
+    high = "#7A5C8F"
+  ) +
+  
+  scale_size(range = c(3, 10)) +
+  
+  labs(
+    title = "Where Different Clothing Styles Are Seen",
+    subtitle = "Shows frequency of formal vs casual clothing across locations",
+    x = "Clothing Style",
+    y = "Location",
+    size = "Count",
+    colour = "Count"
+  ) +
+  
+  my_theme
+
+ggsave("plot2.png", plot2)
+
+
+
+plot4 = logged_data %>%
+  
+  group_by(Where.did.you.see.this.person.) %>%
+  
+  summarise(
+    avg_layers = mean(How.many.layers.were.they.wearing.),
+    n = n()
+  ) %>%
+  
+  arrange(desc(avg_layers)) %>%
+  
+  ggplot(aes(
+    x = reorder(Where.did.you.see.this.person., avg_layers),
+    y = avg_layers,
+    fill = Where.did.you.see.this.person.
+  )) +
+  
+  geom_col() +
+  
+  coord_flip() +
+  
+  scale_fill_manual(values = c(
+    "School" = "#BFD8C1",
+    "Work" = "#CDB4DB",
+    "Streets" = "#D8C3E3",
+    "Transport" = "#DDE8E0",
+    "Home" = "#C7E2D0"
+  )) +
+  
+  labs(
+    title = "Average Clothing Layers by Location",
+    subtitle = "Locations ranked using arrange() (highest to lowest)",
+    x = "Location",
+    y = "Average Layers"
+  ) +
+  
+  my_theme +
+  theme(legend.position = "none")
+
+ggsave("plot4.png", plot4)
+
+
+library(stringr)
+
+style_data <- logged_data %>%
+  
+  mutate(
+    formality = if_else(
+      str_detect(
+        What.style.best.describes.how.the.person.was.dressed.,
+        "Formal"
+      ),
+      "Formal",
+      "Non-Formal"
+    )
+  )
+
+plot6 <- style_data %>%
+  
+  group_by(Where.did.you.see.this.person., formality) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  
+  group_by(Where.did.you.see.this.person.) %>%
+  mutate(prop = n / sum(n)) %>%
+  
+  ggplot(aes(
+    x = Where.did.you.see.this.person.,
+    y = prop,
+    fill = formality
+  )) +
+  
+  geom_col(position = "fill") +
+  
+  scale_fill_manual(values = c(
+    "Formal" = "#CDB4DB",
+    "Non-Formal" = "#BFD8C1"
+  )) +
+  
+  labs(
+    title = "Proportion of Formal vs Non-Formal Clothing by Location",
+    subtitle = "Shows relative formality distribution within each location",
+    x = "Location",
+    y = "Proportion",
+    fill = "Dress Type"
+  ) +
+  
+  my_theme
+
+ggsave("plot6.png", plot6)
